@@ -1,0 +1,269 @@
+# STEP 1: Import and Set Up Environments
+#import
+import arcpy
+import os
+import shutil
+from arcpy import env
+from arcpy.sa import *
+
+#ensure extension is working
+arcpy.CheckOutExtension ("Spatial")
+
+#Environments
+#set up environment
+from arcpy import env
+arcpy.env.workspace = r"F:\workspace"
+
+#set up mask environment
+arcpy.env.mask = r"F:\ConUS_shp\ConUS_Dissolved.shp"
+
+#set up parallel processing
+arcpy.env.parallelProcessingFactor = "100%"
+
+# STEP 2 : Extract By Mask 2041-2061 (For Loop)
+
+original_directory = r"C:\Users\tammi\OneDrive - Cal Poly Pomona\Data_org_Granco_24\CONUS_204060"
+
+ #List of original filenames
+original_filenames = [
+    "ConUS_GISS-E2-1-G_ssp585_2041-2060.tif",
+    "ConUS_ACCESS-CM2_ssp585_2041-2060.tif",
+    "ConUS_BCC-CSM2-MR_ssp585_2041-2060.tif",
+    "ConUS_CMCC-ESM2_ssp585_2041-2060.tif",
+    "ConUS_EC-Earth3-Veg_ssp585_2041-2060.tif",
+    "ConUS_FIO-ESM-2-0_ssp585_2041-2060.tif",
+    "ConUS_HadGEM3-GC31-LL_ssp585_2041-2060.tif",
+    "ConUS_INM-CM5-0_ssp585_2041-2060.tif",
+    "ConUS_IPSL-CM6A-LR_ssp585_2041-2060.tif",
+    "ConUS_MIROC6_ssp585_2041-2060.tif",
+    "ConUS_MPI-ESM1-2-HR_ssp585_2041-2060.tif",
+    "ConUS_MRI-ESM2-0_ssp585_2041-2060.tif",
+    "ConUS_UKESM1-0-LL_ssp585_2041-2060.tif",
+]
+
+# Set overwrite option to True
+arcpy.env.overwriteOutput = True
+
+# Mask feature class path
+mask_feature_class = r"C:\Users\tammi\OneDrive - Cal Poly Pomona\Data_org_Granco_24\ConUS_shp\ConUS_Dissolved.shp"
+
+# Iterate through each original filename
+for original_filename in original_filenames:
+    # Get the full path of the original file
+    original_path = os.path.join(original_directory, original_filename)
+
+    # Perform Extract by Mask
+    arcpy.sa.ExtractByMask(original_path, mask_feature_class).save(original_path)
+
+    print(f"Extraction complete for {original_filename}")
+
+print("All files extracted successfully.")
+
+#STEP 3 Rename Files 2041-2061 
+
+#set up workspace environment
+arcpy.env.workspace = r"C:\Users\tammi\OneDrive - Cal Poly Pomona\Data_org_Granco_24\CONUS_204060"
+
+# *************Set New Original file directory to be CONUS **********
+original_directory = r"C:\Users\tammi\OneDrive - Cal Poly Pomona\Data_org_Granco_24\CONUS_204060"
+
+ #List of original filenames
+original_filenames = [
+    #"wc2.1_30s_bioc_GISS-E2-1-G_ssp585_2041-2060.tif",
+    "wc2.1_30s_bioc_ACCESS-CM2_ssp585_2041-2060.tif",
+    "wc2.1_30s_bioc_BCC-CSM2-MR_ssp585_2041-2060.tif",
+    "wc2.1_30s_bioc_CMCC-ESM2_ssp585_2041-2060.tif",
+    #"wc2.1_30s_bioc_EC-Earth3-Veg_ssp585_2041-2060.tif",
+    "wc2.1_30s_bioc_FIO-ESM-2-0_ssp585_2041-2060.tif",
+    "wc2.1_30s_bioc_HadGEM3-GC31-LL_ssp585_2041-2060.tif",
+    #"wc2.1_30s_bioc_INM-CM5-0_ssp585_2041-2060.tif",
+   # "wc2.1_30s_bioc_IPSL-CM6A-LR_ssp585_2041-2060.tif",
+   # "wc2.1_30s_bioc_MIROC6_ssp585_2041-2060.tif",
+   # "wc2.1_30s_bioc_MPI-ESM1-2-HR_ssp585_2041-2060.tif",
+   # "wc2.1_30s_bioc_MRI-ESM2-0_ssp585_2041-2060.tif",
+   # "wc2.1_30s_bioc_UKESM1-0-LL_ssp585_2041-2060.tif",
+]
+
+# Iterate through each original filename
+for original_filename in original_filenames:
+    ##Remove the prefix "wc2.1_30s_bioc_" and add the prefix "ConUS_"
+    new_filename = "ConUS_" + original_filename.replace("wc2.1_30s_bioc_", "")
+
+    # Construct the original and new file paths
+    original_path = os.path.join(original_directory, original_filename)
+    new_path = os.path.join(original_directory, new_filename)  # Save the renamed file in the same directory
+
+    # Rename the file
+    os.rename(original_path, new_path)
+
+    print(f"File renamed successfully: {original_filename} -> {new_filename}")
+
+print("All files renamed successfully.")
+
+# STEP 4: Repeat steps for 2081-2100 datasets
+#set up workspace environment
+arcpy.env.workspace = r"C:\Users\tammi\OneDrive - Cal Poly Pomona\2080100"
+original_directory = r"C:\Users\tammi\OneDrive - Cal Poly Pomona\2080100"
+
+# List of original filenames
+original_filenames = [
+    "wc2.1_30s_bioc_GISS-E2-1-G_ssp585_2081-2100.tif",
+    "wc2.1_30s_bioc_ACCESS-CM2_ssp585_2081-2100.tif",
+    "wc2.1_30s_bioc_BCC-CSM2-MR_ssp585_2081-2100.tif",
+    "wc2.1_30s_bioc_CMCC-ESM2_ssp585_2081-2100.tif",
+    "wc2.1_30s_bioc_EC-Earth3-Veg_ssp585_2081-2100.tif",
+    "wc2.1_30s_bioc_FIO-ESM-2-0_ssp585_2081-2100.tif",
+    "wc2.1_30s_bioc_HadGEM3-GC31-LL_ssp585_2081-2100.tif",
+    "wc2.1_30s_bioc_INM-CM5-0_ssp585_2081-2100.tif",
+    "wc2.1_30s_bioc_IPSL-CM6A-LR_ssp585_2081-2100.tif",
+    "wc2.1_30s_bioc_MIROC6_ssp585_2081-2100.tif",
+    "wc2.1_30s_bioc_MPI-ESM1-2-HR_ssp585_2081-2100.tif",
+    "wc2.1_30s_bioc_MRI-ESM2-0_ssp585_2081-2100.tif",
+    "wc2.1_30s_bioc_UKESM1-0-LL_ssp585_2081-2100.tif",
+]
+
+# Set overwrite option to True
+arcpy.env.overwriteOutput = True
+
+# Mask feature class path
+mask_feature_class = r"F:\ConUS_shp\ConUS_Dissolved.shp"
+
+# Iterate through each original filename
+for original_filename in original_filenames:
+    # Get the full path of the original file
+    original_path = os.path.join(original_directory, original_filename)
+
+    # Perform Extract by Mask
+    arcpy.sa.ExtractByMask(original_path, mask_feature_class).save(original_path)
+
+    print(f"Extraction complete for {original_filename}")
+
+print("All files extracted successfully.")
+
+# STEP 5: Rename Files 2081-2100
+# List of original filenames
+original_filenames = [
+    "wc2.1_30s_bioc_GISS-E2-1-G_ssp585_2081-2100.tif",
+    "wc2.1_30s_bioc_ACCESS-CM2_ssp585_2081-2100.tif",
+    "wc2.1_30s_bioc_BCC-CSM2-MR_ssp585_2081-2100.tif",
+    "wc2.1_30s_bioc_CMCC-ESM2_ssp585_2081-2100.tif",
+    "wc2.1_30s_bioc_EC-Earth3-Veg_ssp585_2081-2100.tif",
+    "wc2.1_30s_bioc_FIO-ESM-2-0_ssp585_2081-2100.tif",
+    "wc2.1_30s_bioc_HadGEM3-GC31-LL_ssp585_2081-2100.tif",
+    "wc2.1_30s_bioc_INM-CM5-0_ssp585_2081-2100.tif",
+    "wc2.1_30s_bioc_IPSL-CM6A-LR_ssp585_2081-2100.tif",
+    "wc2.1_30s_bioc_MIROC6_ssp585_2081-2100.tif",
+    "wc2.1_30s_bioc_MPI-ESM1-2-HR_ssp585_2081-2100.tif",
+    "wc2.1_30s_bioc_MRI-ESM2-0_ssp585_2081-2100.tif",
+    "wc2.1_30s_bioc_UKESM1-0-LL_ssp585_2081-2100.tif",
+]
+
+# Iterate through each original filename
+for original_filename in original_filenames:
+    # Remove the prefix "wc2.1_30s_bioc_" and add the prefix "ConUS_"
+    new_filename = "wc2.1_30s_bioc_" + original_filename.replace("ConUS_", "")
+
+    # Construct the original and new file paths
+    original_path = os.path.join(original_directory, original_filename)
+    new_path = os.path.join(original_directory, new_filename)  # Save the renamed file in the same directory
+
+    # Rename the file
+    os.rename(original_path, new_path)
+
+    print(f"File renamed successfully: {original_filename} -> {new_filename}")
+
+print("All files renamed successfully.")
+
+#STEP 6: HISTORICAL GCM: Extract By Mask (For Loop)
+
+original_directory = r"F:\CONUS_HistGCM"
+
+# List of original filenames
+original_filenames = [
+    "ConUS_HIST_1.tif",
+    "ConUS_HIST_2.tif",
+    "ConUS_HIST_3.tif",
+    "ConUS_HIST_4.tif",
+    "ConUS_HIST_5.tif",
+    "ConUS_HIST_6.tif",
+    "ConUS_HIST_7.tif",
+    "ConUS_HIST_8.tif",
+    "ConUS_HIST_9.tif",
+    "ConUS_HIST_10.tif",
+    "ConUS_HIST_11.tif",
+    "ConUS_HIST_12.tif",
+    "ConUS_HIST_13.tif",
+    "ConUS_HIST_14.tif",
+    "ConUS_HIST_15.tif",
+    "ConUS_HIST_16.tif",
+    "ConUS_HIST_17.tif",
+    "ConUS_HIST_18.tif",
+    "ConUS_HIST_19.tif",
+]
+
+# Set overwrite option to True
+arcpy.env.overwriteOutput = True
+
+# Mask feature class path
+mask_feature_class = r"F:\ConUS_shp\ConUS_Dissolved.shp"
+
+# Iterate through each original filename
+for original_filename in original_filenames:
+    # Get the full path of the original file
+    original_path = os.path.join(original_directory, original_filename)
+
+    # Perform Extract by Mask
+    arcpy.sa.ExtractByMask(original_path, mask_feature_class).save(original_path)
+
+    print(f"Extraction complete for {original_filename}")
+
+print("All files extracted successfully.")
+
+#STEP 7: HISTORICAL GCM Rename
+ 
+import arcpy
+import os
+
+# Set up workspace environment
+arcpy.env.workspace = r"F:\CONUS_HistGCM"
+
+# List of original filenames
+original_filenames = [
+    "wc2.1_30s_bio_1.tif",
+    "wc2.1_30s_bio_2.tif",
+    "wc2.1_30s_bio_3.tif",
+    "wc2.1_30s_bio_4.tif",
+    "wc2.1_30s_bio_5.tif",
+    "wc2.1_30s_bio_6.tif",
+    "wc2.1_30s_bio_7.tif",
+    "wc2.1_30s_bio_8.tif",
+    "wc2.1_30s_bio_9.tif",
+    "wc2.1_30s_bio_10.tif",
+    "wc2.1_30s_bio_11.tif",
+    "wc2.1_30s_bio_12.tif",
+    "wc2.1_30s_bio_13.tif",
+    "wc2.1_30s_bio_14.tif",
+    "wc2.1_30s_bio_15.tif",
+    "wc2.1_30s_bio_16.tif",
+    "wc2.1_30s_bio_17.tif",
+    "wc2.1_30s_bio_18.tif",
+    "wc2.1_30s_bio_19.tif",
+]
+
+# Iterate through each original filename
+for original_filename in original_filenames:
+    # Construct the original file path
+    original_path = os.path.join(arcpy.env.workspace, original_filename)
+
+    # New filename
+    new_filename = "ConUS_HIST_" + original_filename.replace("wc2.1_30s_bio_", "")
+
+    # Construct the new file path
+    new_path = os.path.join(arcpy.env.workspace, new_filename)
+
+    # Rename the file
+    os.rename(original_path, new_path)
+
+    print(f"File renamed successfully: {original_filename} -> {new_filename}")
+
+print("All files renamed successfully.")
